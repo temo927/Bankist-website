@@ -8,7 +8,8 @@ const overlay = document.querySelector(".overlay");
 const btnCloseModal = document.querySelector(".btn--close-modal");
 const btnsOpenModal = document.querySelectorAll(".btn--show-modal");
 
-const openModal = function () {
+const openModal = function (e) {
+  e.preventDefault();
   modal.classList.remove("hidden");
   overlay.classList.remove("hidden");
 };
@@ -19,7 +20,7 @@ const closeModal = function () {
 };
 
 for (let i = 0; i < btnsOpenModal.length; i++)
-  btnsOpenModal[i].addEventListener("click", openModal);
+  btnsOpenModal.forEach((btn) => btn.addEventListener("click", openModal));
 
 btnCloseModal.addEventListener("click", closeModal);
 overlay.addEventListener("click", closeModal);
@@ -30,9 +31,44 @@ document.addEventListener("keydown", function (e) {
   }
 });
 
-const btn = document.querySelector(`.btn--scroll-to`);
+// Scroll
+
+const btnScrollTo = document.querySelector(`.btn--scroll-to`);
 const section1 = document.querySelector(`#section--1`);
 
-btn.addEventListener(`click`, (e) => {
+btnScrollTo.addEventListener(`click`, (e) => {
   section1.scrollIntoView({ behavior: "smooth" });
+});
+
+document.querySelector(`.nav__links`).addEventListener(`click`, (e) => {
+  e.preventDefault();
+  const clicked = e.target.classList.contains(`nav__link`);
+  if (clicked) {
+    const id = e.target.getAttribute(`href`);
+    document.querySelector(id).scrollIntoView({ behavior: "smooth" });
+  }
+});
+
+//Tabbed Component
+
+const tabsContainer = document.querySelector(`.operations__tab-container`);
+const tabs = document.querySelectorAll(`.operations__tab`);
+const content = document.querySelectorAll(`.operations__content`);
+
+tabsContainer.addEventListener(`click`, function (e) {
+  const clicked = e.target.closest(`.operations__tab`);
+
+  if (clicked) {
+    // Remove active classes
+    tabs.forEach((t) => t.classList.remove(`operations__tab--active`));
+    content.forEach((c) => c.classList.remove(`operations__content--active`));
+
+    // Active tab
+    clicked.classList.add(`operations__tab--active`);
+
+    //Active content area
+    document
+      .querySelector(`.operations__content--${clicked.dataset.tab}`)
+      .classList.add(`operations__content--active`);
+  }
 });
