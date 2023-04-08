@@ -88,5 +88,23 @@ const fade = function (e) {
   }
 };
 // passing argument to handler function
-nav.addEventListener(`mouseover`, fade.bind(0, 5));
+nav.addEventListener(`mouseover`, fade.bind(0.5));
 nav.addEventListener(`mouseout`, fade.bind(1));
+
+// Sticky navigation
+
+const header = document.querySelector(`.header`);
+const navHeight = nav.getBoundingClientRect().height;
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries[0].isIntersecting
+      ? nav.classList.remove(`sticky`)
+      : nav.classList.add(`sticky`);
+  },
+  {
+    root: null,
+    threshold: 0,
+    rootMargin: `-${navHeight}px`,
+  }
+);
+observer.observe(header);
