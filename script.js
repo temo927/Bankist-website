@@ -108,3 +108,54 @@ const observer = new IntersectionObserver(
   }
 );
 observer.observe(header);
+
+// revealing sections on scroll
+
+const sectionObserver = new IntersectionObserver(
+  (entry) => {
+    const [ent] = entry;
+    if (ent.isIntersecting) {
+      ent.target.classList.remove(`section--hidden`);
+      sectionObserver.unobserve(ent.target);
+    }
+  },
+  {
+    root: null,
+    threshold: 0.15,
+  }
+);
+
+const allSections = document.querySelectorAll(`.section`);
+allSections.forEach((section) => {
+  sectionObserver.observe(section);
+  section.classList.add(`section--hidden`);
+});
+
+/// lazy loading images
+
+const imgTarget = document.querySelectorAll(`img[data-src]`);
+
+const imgObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        //// replace src with datasrc
+        entry.target.src = `${entry.target.dataset.src}`;
+        // remove bluf effect
+        entry.target.addEventListener(`load`, () => {
+          entry.target.classList.remove(`lazy-img`);
+        });
+        imgObserver.unobserve(entry.target);
+      }
+    });
+  },
+  {
+    root: null,
+    threshold: 0,
+    rootMargin: `200px`,
+  }
+);
+
+imgTarget.forEach((img) => {
+  imgObserver.observe(img);
+});
